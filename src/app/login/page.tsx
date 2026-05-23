@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 import { useUserStore } from "@/stores/useUserStore"
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
 import Link from "next/link"
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirect') || '/'
@@ -85,5 +85,17 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-24 flex justify-center items-center">
+        <div className="text-center">Loading login...</div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }

@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 import { Flight } from "@/types/database"
 import { FlightCard } from "@/components/FlightCard"
 import { useFlightStore } from "@/stores/useFlightStore"
 
-export default function SearchResults() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { setSelectedFlightId, setBookingStep } = useFlightStore()
@@ -101,10 +101,26 @@ export default function SearchResults() {
               flight={flight} 
               passengers={passengers} 
               onSelect={handleSelectFlight} 
-            />
+              />
           ))}
         </div>
       )}
     </div>
+  )
+}
+
+export default function SearchResults() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-40 w-full bg-accent/20 animate-pulse rounded-xl" />
+          ))}
+        </div>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   )
 }
